@@ -20,9 +20,20 @@ export async function POST(request: Request) {
       );
     }
 
+    // Map frontend sport names to Versus API sport identifiers
+    const sportMap: Record<string, string[]> = {
+      'nfl': ['nfl'],
+      'nba': ['nba'],
+      'college-football': ['cfb', 'college-football', 'cf'],
+      'college-basketball': ['cbb', 'college-basketball', 'ncaab', 'cb'],
+    };
+
+    const possibleSports = sportMap[sport] || [sport];
+    const apiSport = possibleSports[0]; // Use first identifier for simulation (we'll handle errors if needed)
+
     // Versus API uses GET with path parameters: simulation/:sport/:homeTeam/:awayTeam
     // Note: The API documentation shows homeTeam first, then awayTeam in the path
-    const endpoint = `${VERSUS_API_BASE}/simulation/${sport}/${homeTeamId}/${awayTeamId}`;
+    const endpoint = `${VERSUS_API_BASE}/simulation/${apiSport}/${homeTeamId}/${awayTeamId}`;
     
     console.log('[Versus Simulation] Request:', {
       sport,
